@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+
+require 'valkey/objects'
+
+# Using ValKey Objects
+## Create your class object
+class ValKey
+  # 1. include valkey-objects layer
+  include VK
+  # 2. stitch your object together.
+  value :myvalue
+  counter :mycounter
+  hashkey :myhash
+  sortedset :mysortedset
+  set :myset
+  queue :myqueue
+  place :myplace
+  pipe :mypipe
+  toggle :mytoggle
+  # 3. define @id in initialize.
+  def initialize k
+    @id = k
+  end
+  # other stuff...
+end
+
+
+
+require 'awesome_print'
+
+@x = {}
+
+## Or as a collection of "X"s...
+module X
+  @@X = Hash.new { |h,k| h[k] = Ex.new(k) }
+  class Ex
+    include VK
+    set :stuff
+    pipe :ear
+    def initialize k
+      @id = k
+    end
+  end
+  def self.keys
+    @@X.keys
+  end
+  def self.[] k
+    if !@@X.has_key?(k)
+      @@X[k].ear.on { |msg| puts "MSG[#{k}]:"; ap msg }
+    end
+    @@X[k]
+  end
+end
+
+X['Aaa'].ear << %[A]
+X['Bbb'].ear << %[B]
+X['Ccc'].ear << %[C]

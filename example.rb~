@@ -1,0 +1,101 @@
+# frozen_string_literal: true
+
+require 'valkey/objects'
+
+# Using ValKey Objects
+## Create your class object
+class ValKey
+  # 1. include valkey-objects layer
+  include VK
+  # 2. stitch your object together.
+  value :myvalue
+  counter :mycounter
+  hashkey :myhash
+  sortedset :mysortedset
+  set :myset
+  queue :myqueue
+  place :myplace
+  pipe :mypipe
+  toggle :mytoggle
+  # 3. define @id in initialize.
+  def initialize k
+    @id = k
+  end
+  # other stuff...
+end
+
+
+
+require 'awesome_print'
+
+@x = {}
+
+## then user it.
+puts %[=== Valkey Object Test ===]
+@x[:x] = ValKey.new("My Special Valkey object.")
+#### pub/sub pipe
+##### on message
+@x[:x].mypipe.on { |msg| puts %[MSG]; ap msg }
+##### publish message
+@x[:x].mypipe << "Pipe Connected!"
+### get/set string value...
+@x[:x].myvalue.value = "Hello, World"
+### get/set/incr/decr float value...
+@x[:x].mycounter.value = 1.2345
+### get/set key/value pairs...
+@x[:x].myhash[:key] = "Value"
+### sort keys by score...
+#### set
+@x[:x].mysortedset["my other key"] = 9.8
+#### poke/get
+@x[:x].mysortedset.poke "my key", @x[:x].mysortedset["my other key"]
+#### by high score
+@x[:x].mysortedset.value { |i, e| ap %[Sorted Sets: i: #{i} e: #{e}] }
+### collect keys...
+@x[:x].myset << "my member"
+@x[:x].myset << "my new member"
+#### filter by regexp...
+h = @x[:x].myset[/ new /]
+puts %[Filtered set members:]
+ap h
+#### each collection key....
+@x[:x].myset.value { |i, e| puts %[Sets: i: #{i} e: #{e}] }
+### points by coordinates...
+@x[:x].myplace.add "Palermo", 13.361389, 38.115556
+@x[:x].myplace.add "Catania", 15.087269, 37.502669
+#### distance between points.
+distance = @x[:x].myplace.distance "Palermo", "Catania"
+ap %[The meters between the points: #{distance}]
+#### places within radius by coordinates
+places = @x[:x].myplace.radius 15.087269, 37.502669, 5000
+ap %[The places within 5000 meters of the coordinates: #{places}]
+puts %[Place Values...]
+#### collection of places...
+@x[:x].myplace.value { |i, e| puts %[Places: i: #{i} e: #{e}] }
+ap VK['*']
+
+## Or as a collection of "X"s...
+module X
+  @@X = Hash.new { |h,k| h[k] = Ex.new(k) }
+  class Ex
+    include VK
+    set :stuff
+    pipe :ear
+    def initialize k
+      @id = k
+    end
+  end
+  def self.keys
+    @@X.keys
+  end
+  def self.[] k
+    if !@@X.has_key?(k)
+      @@X[k].ear.on { |msg| puts "MSG[#{k}]:"; ap msg }
+    end
+    @@X[k]
+  end
+end
+
+@x[:a] = X['Aaa']
+@x[:b] = X['Bbb']
+@x[:c] = X['Ccc']

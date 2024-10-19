@@ -1,16 +1,9 @@
-# ValKey Objects
-Based upon the redis-objects library, VK allows for ValKey backed ruby objects.
+# frozen_string_literal: true
 
-## installation
-```
-gem install valkey-objects
-```
-
-## usage
-
-### simple
-```
 require 'valkey/objects'
+
+# Using ValKey Objects
+## Create your class object
 class ValKey
   # 1. include valkey-objects layer
   include VK
@@ -31,44 +24,53 @@ class ValKey
   # other stuff...
 end
 
+## then user it.
+puts %[=== Valkey Object Test ===]
 @x = ValKey.new("My Special Valkey object.")
+#### pub/sub pipe
+##### on message
 @x.mypipe.on { |msg| puts %[MSG]; ap msg }
+##### publish message
 @x.mypipe << "Pipe Connected!"
+### get/set string value...
 @x.myvalue.value = "Hello, World"
+### get/set/incr/decr float value...
 @x.mycounter.value = 1.2345
+### get/set key/value pairs...
 @x.myhash[:key] = "Value"
+### sort keys by score...
+#### set
 @x.mysortedset["my other key"] = 9.8
+#### poke/get
 @x.mysortedset.poke "my key", @x.mysortedset["my other key"]
-@x.mysortedset.value { |i, e| puts %[Sorted Sets: i: #{i} e: #{e}] }
+#### by high score
+@x.mysortedset.value { |i, e| ap %[Sorted Sets: i: #{i} e: #{e}] }
+### collect keys...
 @x.myset << "my member"
 @x.myset << "my new member"
+#### filter by regexp...
 h = @x.myset[/ new /]
+puts %[Filtered set members:]
+ap h
+#### each collection key....
 @x.myset.value { |i, e| puts %[Sets: i: #{i} e: #{e}] }
+### points by coordinates...
 @x.myplace.add "Palermo", 13.361389, 38.115556
 @x.myplace.add "Catania", 15.087269, 37.502669
+#### distance between points.
 distance = @x.myplace.distance "Palermo", "Catania"
+ap %[The meters between the points: #{distance}]
+#### places within radius by coordinates
 places = @x.myplace.radius 15.087269, 37.502669, 5000
+ap %[The places within 5000 meters of the coordinates: #{places}]
+puts %[Place Values...]
+#### collection of places...
 @x.myplace.value { |i, e| puts %[Places: i: #{i} e: #{e}] }
-```
+ap VK['*']
 
-### advanced
-```
-class Game
-  include VK
-  sortedset :points
-  def initialize k
-    @id = k
-  end
-  def score p, h={ points: 1 }
-    self.points.poke p, h[:points]
-  end
-end
 
-@game = Hash.new { |h,k| h[k] = Game.new(k) }
-```
 
-### modular
-```
+## Or as a collection of "X"s...
 module X
   @@X = Hash.new { |h,k| h[k] = Ex.new(k) }
   class Ex
@@ -90,8 +92,6 @@ module X
   end
 end
 
-X['Aaa'].ear << %[A]
-X['Bbb'].ear << %[B]
-X['Ccc'].ear << %[C]
-
-```
+@x[:a] = X['Aaa']
+@x[:b] = X['Bbb']
+@x[:c] = X['Ccc']

@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+require 'valkey/objects'
+
+require 'pry'
+
+class Game
+  include VK
+  sortedset :points
+  queue :log
+  def initialize k
+    @id = k
+  end
+  def score p, h={ points: 1 }
+    self.points.poke p, h[:points]
+  end
+end
+
+@game = Hash.new { |h,k| h[k] = Game.new(k) }
+
+Pry.start
