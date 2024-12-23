@@ -27,7 +27,6 @@ end
 
 ## Deleting keys
 @obj.myKey.expire seconds
-@obj.myKey.expireAt Time.utc
 @obj.myKey.delete!
 
 @obj.myTimestamp.value! => set to utc epoch
