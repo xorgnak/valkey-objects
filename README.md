@@ -6,6 +6,7 @@
 class Example
   include VK
 
+  timestamp :myTimestamp
   toggle :myToggle
   value :myValue
   counter :myCounter
@@ -23,6 +24,9 @@ class Example
 end
 
 @obj = Example.new("Object UUID")
+
+@obj.myTimestamp.value! => set to utc epoch
+@obj.myTimestamp.value => ...
 
 @obj.myToggle.value = true or false
 @obj.myToggle.value => ...
