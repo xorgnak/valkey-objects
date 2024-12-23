@@ -38,11 +38,11 @@ end
 @obj.myToggle.value => ...
 @obj.myToggle.value! => value = !value
 
-@obj.myvalue = "A String"
-@obj.myValue => "A string"
+@obj.myvalue.value = "A String"
+@obj.myValue.value => "A string"
 
-@obj.myCounter = number
-@obj.myCounter => number
+@obj.myCounter.value = number
+@obj.myCounter.value => number
 @obj.incr number
 @obj.decr number
 
