@@ -27,6 +27,8 @@ end
 
 @obj.myTimestamp.value! => set to utc epoch
 @obj.myTimestamp.value => ...
+@obj.myTimestamp.ago => seconds since
+@obj.myTimestamp.to_time => Time object
 
 @obj.myToggle.value = true or false
 @obj.myToggle.value => ...
