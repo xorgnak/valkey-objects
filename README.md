@@ -1,6 +1,6 @@
 # ValKey Objects
 - Standard `gem install valkey-objects` and `bundle add valkey-objects` installation.
-- As always, `require 'valkey'`
+- Use `require 'valkey/objects'`.
 - Example:
 ```
 class Example
