@@ -40,6 +40,7 @@ end
 
 @obj.myvalue.value = "A String"
 @obj.myValue.value => "A string"
+@obj.myValue.match(/Regexp/) { |match| ... }
 
 @obj.myCounter.value = number
 @obj.myCounter.value => number
