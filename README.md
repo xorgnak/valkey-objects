@@ -58,6 +58,7 @@ end
 @obj.mySet << "obj"
 @obj.mySet["o"] => ["obj", ...]
 @obj.mySet.rm "obj"
+@obj.mySet.include? "obj"
 @obj.mySet & @obj.otherSet
 @obj.mySet | @obj.otherSet
 @obj.mySet.value { |key, index| ... }
