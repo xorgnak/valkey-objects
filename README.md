@@ -57,7 +57,7 @@ end
 @obj.mySortedSet.value { |key, index| ... }
 
 @obj.mySet << "obj"
-@obj.mySet["o"] => ["obj", ...]
+@obj.mySet['ob*'] => ["obj", ...]
 @obj.mySet.rm "obj"
 @obj.mySet.include? "obj"
 @obj.mySet & @obj.otherSet
