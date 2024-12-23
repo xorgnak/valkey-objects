@@ -49,6 +49,7 @@ end
 @obj.myHashKey[:stringKey] = "Another String"
 @obj.myHashKey[:numberKey] = 1.23
 @obj.myHashKey[:key] => value
+@obj.myHashKey.to_h
 
 @obj.mySortedSet.poke key, number
 @obj.mySotredSet[key] => score
