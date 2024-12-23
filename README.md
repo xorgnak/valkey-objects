@@ -25,6 +25,11 @@ end
 
 @obj = Example.new("Object UUID")
 
+## Deleting keys
+@obj.myKey.expire seconds
+@obj.myKey.expireAt Time.utc
+@obj.myKey.delete!
+
 @obj.myTimestamp.value! => set to utc epoch
 @obj.myTimestamp.value => ...
 @obj.myTimestamp.ago => seconds since
