@@ -15,12 +15,21 @@ class Example
   set :mySet
   queue :myQueue
   place :myPlace
-  pipe :myPipe
+  ticker :myTicker
+  entry :myEntry
+  vector :myVector
+
+  # Clear value on read
+  value :myval, flush: true
+
+  # Reset ttl in seconds on every read
+  value :myVal, ttl: 60
 
   def initialize k
+    # Must be available for VK module.
     @id = k
   end
-  # whatever ...
+  # include your work here...
 end
 
 @obj = Example.new("Object UUID")
@@ -74,4 +83,19 @@ end
 @obj.myPlace.distance "My Place", "Other Place"
 @obj.myPlace.radius longitude, latitude, distance
 @obj.myPlace.value { |key, index| ... }
+
+@obj.myTicker["my key"] => "value"
+@obj.myTicker["my key"] = "value"
+@obj.myTicker.value
+@obj.myTicker.value { |index, h={ score: key changes, key: key, value: value }| ... }
+
+@obj.myEntry["my key"] => "value"
+@obj.myEntry.push({ key: "value"})
+@obj.myEntry.value
+@obj.myEntry.value { |index, h={}| ... }
+
+@obj.myTicker["my key"] => "value"
+@obj.myTicker["my key"] = "value"
+@obj.myVector.nearest("...String to match against...") => [{ distance between element }]
+@obj.myVector.value { |index, e| ... }
 ```
