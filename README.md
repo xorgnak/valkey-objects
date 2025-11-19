@@ -1,101 +1,52 @@
-# ValKey Objects
-- Standard `gem install valkey-objects` and `bundle add valkey-objects` installation.
-- Use `require 'valkey/objects'`.
-- Example:
-```
-class Example
-  include VK
+## Installation
 
-  timestamp :myTimestamp
-  toggle :myToggle
+Install the gem and add to the application's Gemfile by executing:
+
+    $ bundle add valkey-objects
+
+If bundler is not being used to manage dependencies, install the gem by executing:
+
+    $ gem install valkey-objects
+
+## Usage
+
+```ruby
+require "valkey/objects"
+
+class X
+  include ValkeyObjects
   value :myValue
   counter :myCounter
-  hashkey :myHashKey
-  sortedset :mySortedSet
+  list :myList
   set :mySet
-  queue :myQueue
-  place :myPlace
-  ticker :myTicker
-  entry :myEntry
-  vector :myVector
-
-  # Clear value on read
-  value :myval, flush: true
-
-  # Reset ttl in seconds on every read
-  value :myVal, ttl: 60
-
-  def initialize k
-    # Must be available for VK module.
-    @id = k
-  end
-  # include your work here...
+  hash_key :myHash
+  sorted_set :mySortedSet
 end
 
-@obj = Example.new("Object UUID")
+@user = X.new
+@user.myValue.value = "Alice"
+@user.myValue.value #=> "Alice"
 
-## Deleting keys
-@obj.myKey.expire seconds
-@obj.myKey.delete!
+@user.myCounter.increment
+@user.myCounter.decrement
+@user.myCounter.increment 1
+@user.myCounter.decrement 2
+@user.myCounter.to_i #=> -1
 
-@obj.myTimestamp.value! => set to utc epoch
-@obj.myTimestamp.value => ...
-@obj.myTimestamp.ago => seconds since
-@obj.myTimestamp.to_time => Time object
+@user.myList << "item"
+@user.myList << "this"
+@user.myList[1] #=> "this"
+@user.myList[1] = "next"
+@user.myList.shift
+@user.myList.to_a #=> ["next"]
+@user.myList.knn #=> values as KNN object
 
-@obj.myToggle.value = true or false
-@obj.myToggle.value => ...
-@obj.myToggle.value! => value = !value
+@user.mySet << "one"
+@user.mySet << "two"
+@user.mySet.members
+@user.mySet.knn #=> members as KNN object
 
-@obj.myvalue.value = "A String"
-@obj.myValue.value => "A string"
-@obj.myValue.match(/Regexp/) { |match| ... }
-
-@obj.myCounter.value = number
-@obj.myCounter.value => number
-@obj.incr number
-@obj.decr number
-
-@obj.myHashKey[:stringKey] = "Another String"
-@obj.myHashKey[:numberKey] = 1.23
-@obj.myHashKey[:key] => value
-@obj.myHashKey.to_h
-
-@obj.mySortedSet.poke key, number
-@obj.mySotredSet[key] => score
-@obj.mySortedSet.value { |key, index| ... }
-
-@obj.mySet << "obj"
-@obj.mySet['ob*'] => ["obj", ...]
-@obj.mySet.rm "obj"
-@obj.mySet.include? "obj"
-@obj.mySet & @obj.otherSet
-@obj.mySet | @obj.otherSet
-@obj.mySet.value { |key, index| ... }
-
-@obj.myQueue << "obj"
-@obj.myQueue.length => 1
-@obj.myQueue.front => "obj" && pop
-@obj.myQueue.value { |key, index| ... }
-
-@obj.myPlace "My Place", longitude, latitude
-@obj.myPlace["My Place"] => { longitude: X, latitude: Y }
-@obj.myPlace.distance "My Place", "Other Place"
-@obj.myPlace.radius longitude, latitude, distance
-@obj.myPlace.value { |key, index| ... }
-
-@obj.myTicker["my key"] => "value"
-@obj.myTicker["my key"] = "value"
-@obj.myTicker.value
-@obj.myTicker.value { |index, h={ score: key changes, key: key, value: value }| ... }
-
-@obj.myEntry["my key"] => "value"
-@obj.myEntry.push({ key: "value"})
-@obj.myEntry.value
-@obj.myEntry.value { |index, h={}| ... }
-
-@obj.myTicker["my key"] => "value"
-@obj.myTicker["my key"] = "value"
-@obj.myVector.nearest("...String to match against...") => [{ distance between element }]
-@obj.myVector.value { |index, e| ... }
+@user.myHash[:key] = "value"
+@user.myHash[:key] #=> "value"
+@user.myHash.to_h
 ```
